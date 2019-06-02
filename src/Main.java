@@ -3,6 +3,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -22,9 +23,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        VBox mainBox = new VBox();
+        VBox inputBox = new VBox();
 
-        mainBox.setPadding(new Insets(5,5,5,5));
+        inputBox.setPadding(new Insets(5,5,5,5));
 
         ArrayList<MoneyValueInput> inputs = new ArrayList<>();
         MoneyValueInput defaultFirst = new MoneyValueInput();
@@ -35,7 +36,8 @@ public class Main extends Application {
         addMoreInput.setOnAction(e -> {
             MoneyValueInput thisInput = createNewInput();
             inputs.add(thisInput);
-            mainBox.getChildren().add(thisInput.getBox());
+            inputBox.getChildren().add(thisInput.getBox());
+            primaryStage.setHeight(primaryStage.getHeight() +  27);
 
         });
 
@@ -43,7 +45,8 @@ public class Main extends Application {
         removeInput.setOnAction(e -> {
             if(inputs.size() > 0) {
                 MoneyValueInput tempInput = inputs.remove(inputs.size() - 1);
-                mainBox.getChildren().remove(tempInput.getBox());
+                inputBox.getChildren().remove(tempInput.getBox());
+                primaryStage.setHeight(primaryStage.getHeight() -  27);
             }
         });
 
@@ -63,10 +66,23 @@ public class Main extends Application {
             }
         });
 
-        HBox topBar = new HBox();
-        topBar.getChildren().addAll(addMoreInput,removeInput, calculateMoney);
+        HBox operations = new HBox();
+        operations.getChildren().addAll(addMoreInput,removeInput, calculateMoney);
+        operations.setSpacing(1);
 
-        mainBox.getChildren().addAll(topBar, defaultFirst.getBox());
+        Button exit = new Button("Quit");
+        exit.setOnAction(e -> System.exit(0));
+
+        BorderPane topBar = new BorderPane();
+        topBar.setLeft(operations);
+        topBar.setRight(exit);
+        topBar.setPadding( new Insets(5,5,5,5));
+
+        inputBox.getChildren().addAll(defaultFirst.getBox());
+
+        VBox mainBox = new VBox();
+        mainBox.getChildren().addAll(topBar, inputBox);
+        mainBox.setSpacing(5);
 
 
         primaryStage.setTitle("AvgCalc");
